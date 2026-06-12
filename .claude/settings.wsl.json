@@ -1,0 +1,15 @@
+{
+  "env": {
+    "PATH": "/home/user/.local/share/mise/shims:/home/user/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+  },
+  "permissions": {
+    "deny": [
+      "Edit(/mnt/**)",
+      "Write(/mnt/**)",
+      "Bash(cd /mnt/*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "verbose": true,
+  "skipAutoPermissionPrompt": true
+}
