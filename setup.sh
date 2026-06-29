@@ -11,7 +11,7 @@ link() {
   if [ -L "$dst" ]; then
     rm "$dst"
   elif [ -e "$dst" ]; then
-    echo "SKIP: $dst exists (not a symlink). Back up manually if needed." >&2
+    echo "SKIP: $dst は既存ファイル（symlink ではない）。必要なら手動でバックアップしてください。" >&2
     return
   fi
   ln -sf "$src" "$dst"
@@ -27,4 +27,4 @@ echo "=== Karabiner-Elements ==="
 mkdir -p "$HOME/.config/karabiner"
 link "$DOTFILES_DIR/.config/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
 
-echo "Done."
+echo "完了"
