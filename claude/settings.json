@@ -1,6 +1,25 @@
 {
   "language": "日本語",
+  "cleanupPeriodDays": 365,
+  "effortLevel": "medium",
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true,
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/check-protected-branch.sh"
+          },
+          {
+            "type": "command",
+            "command": "CMD=$(cat | jq -r '.tool_input.command // empty' 2>/dev/null); if echo \"$CMD\" | grep -qE '(^|[;&|] *)npx '; then echo 'npx は使わないでください。代わりに pnpm exec を使用してください。' >&2; exit 2; fi"
+          }
+        ]
+      }
+    ],
     "Notification": [
       {
         "hooks": [
@@ -29,7 +48,7 @@
       "Write",
       "Glob",
       "Grep",
-      "Bash(git status *)",
+      "Bash(git status*)",
       "Bash(git log *)",
       "Bash(git log)",
       "Bash(git diff *)",
@@ -71,12 +90,25 @@
       "Bash(touch *)",
       "Bash(sort *)",
       "Bash(uniq *)",
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Bash(sed *)",
+      "Bash(awk *)",
+      "Bash(cut *)",
+      "Bash(tr *)",
+      "Bash(xargs *)",
+      "Bash(tee *)",
+      "Bash(diff *)",
+      "Bash(realpath *)",
+      "Bash(dirname *)",
+      "Bash(basename *)",
       "Bash(jq *)",
       "Bash(gh pr *)",
       "Bash(gh issue *)",
       "Bash(gh run *)",
       "Bash(gh api *)",
       "Bash(gh repo *)",
+      "Bash(gh label list *)",
       "Bash(gh search *)",
       "Bash(gh workflow view *)",
       "WebFetch",
