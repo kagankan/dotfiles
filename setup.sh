@@ -21,6 +21,7 @@ link() {
 echo "=== Claude Code ==="
 link "$DOTFILES_DIR/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
 link "$DOTFILES_DIR/claude/settings.json" "$CLAUDE_DIR/settings.json"
+link "$DOTFILES_DIR/claude/main-branch-allowed-repos.txt" "$CLAUDE_DIR/main-branch-allowed-repos.txt"
 link "$DOTFILES_DIR/claude/hooks" "$CLAUDE_DIR/hooks"
 
 echo "=== Karabiner-Elements ==="
