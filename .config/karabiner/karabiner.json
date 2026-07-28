@@ -238,6 +238,7 @@
                         "product_id": 99,
                         "vendor_id": 7247
                     },
+                    "disable_built_in_keyboard_if_exists": true,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "left_command" },
@@ -255,6 +256,7 @@
                         "product_id": 33639,
                         "vendor_id": 9354
                     },
+                    "disable_built_in_keyboard_if_exists": true,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "caps_lock" },
