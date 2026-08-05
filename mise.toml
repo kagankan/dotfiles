@@ -10,7 +10,8 @@ claude_theme = "dark"
 claude_tui = "fullscreen"
 
 [dotfiles]
-"~/.zshrc" = ".zshrc"
+"~/.zshrc" = "zsh/zshrc"
+"~/.config/git/ignore" = "git/ignore"
 "~/.claude/CLAUDE.md" = "claude/CLAUDE.md"
 # template モード: {{ vars.* }} をマシン固有値で埋めて実ファイルとして生成する
 "~/.claude/settings.json" = { source = "claude/settings.json", mode = "template" }
@@ -18,7 +19,7 @@ claude_tui = "fullscreen"
 "~/.claude/hooks/notify-complete.sh" = "claude/hooks/notify-complete.sh"
 "~/.claude/hooks/notify-waiting.sh" = "claude/hooks/notify-waiting.sh"
 # macOS 専用（WSL では未使用の symlink ができるだけで無害）
-"~/.config/karabiner/karabiner.json" = ".config/karabiner/karabiner.json"
+"~/.config/karabiner/karabiner.json" = "karabiner/karabiner.json"
 
 # mise bootstrap の最終段で自動実行されるタスク。
 # マシン固有の設定ファイルは symlink にせず、存在しない場合のみテンプレからコピーする

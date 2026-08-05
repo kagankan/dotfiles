@@ -8,20 +8,24 @@
 
 ## ディレクトリ構成
 
-- `.config/karabiner/` — Karabiner-Elements の設定（外部キーボード向けリマップ）
-- `claude/` — Claude Code のユーザーレベル設定（`~/.claude/` に symlink して使う）
-  - `claude/settings.json` — macOS 用
+配布物はツール名のディレクトリでフラットに置く。配置先は `mise.toml` の `[dotfiles]` が定義する。
+
+- `claude/` — Claude Code のユーザーレベル設定（`~/.claude/` に配布する共有テンプレ）
+  - `claude/settings.json` — macOS 用（template モードで変数を埋めて配置）
   - `claude/settings.wsl.json` — WSL 用
   - `claude/hooks/` — 通知音スクリプト等
   - `claude/CLAUDE.md` — 全プロジェクト共通の指示書（symlink 先: `~/.claude/CLAUDE.md`）
+- `git/` — グローバル gitignore（→ `~/.config/git/ignore`）
+- `karabiner/` — Karabiner-Elements の設定、外部キーボード向けリマップ（→ `~/.config/karabiner/`）
+- `zsh/` — シェル設定（→ `~/.zshrc`）
+- `wsl/` — WSL のグローバル設定（Windows 側に置くファイルのため手動で配置）
 - `mise.toml` — dotfiles の適用定義（`[dotfiles]` と `[tasks.bootstrap]`）
 - `mise.wsl.toml` — WSL 用の上書き設定（`mise bootstrap -E wsl` でマージされる）
-- `.wslconfig` — WSL のグローバル設定（Windows 側に置くファイルのため手動で配置）
-- `.zshrc` — シェル設定
 
 ## 規約
 
 - コメント・説明は日本語で書く（コード中のコメント、スクリプトの echo、description フィールド等すべて）
+- dot 付きのファイル・ディレクトリ（`.gitignore`、`.claude/` 等）は「このリポジトリ自体に効く設定」のみに使う。配布物はツール名のディレクトリに dot 無しのファイル名で置く（例: `zsh/zshrc`）
 - `claude/` 配下のファイルは共有テンプレとして機能するため、スクリプトが参照するファイル（許可リスト等）も空テンプレの状態で含める
 - マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
 
