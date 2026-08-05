@@ -1,46 +1,4 @@
 {
-  "language": "日本語",
-  "cleanupPeriodDays": 365,
-  "effortLevel": "medium",
-  "skipDangerousModePermissionPrompt": true,
-  "skipAutoPermissionPrompt": true,
-  "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME\"/.claude/hooks/check-protected-branch.sh"
-          },
-          {
-            "type": "command",
-            "command": "CMD=$(cat | jq -r '.tool_input.command // empty' 2>/dev/null); if echo \"$CMD\" | grep -qE '(^|[;&|] *)npx '; then echo 'npx は使わないでください。代わりに pnpm exec を使用してください。' >&2; exit 2; fi"
-          }
-        ]
-      }
-    ],
-    "Notification": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME\"/.claude/hooks/notify-waiting.sh"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash \"$HOME\"/.claude/hooks/notify-complete.sh"
-          }
-        ]
-      }
-    ]
-  },
   "permissions": {
     "allow": [
       "Read",
@@ -73,6 +31,8 @@
       "Bash(git tag *)",
       "Bash(git ls-tree *)",
       "Bash(pnpm *)",
+      "Bash(yarn eslint *)",
+      "Bash(yarn prettier *)",
       "Bash(ls *)",
       "Bash(ls)",
       "Bash(pwd)",
@@ -108,22 +68,14 @@
       "Bash(gh run *)",
       "Bash(gh api *)",
       "Bash(gh repo *)",
+      "Bash(gh workflow view *)",
       "Bash(gh label list *)",
       "Bash(gh search *)",
-      "Bash(gh workflow view *)",
       "WebFetch",
       "WebSearch",
       "mcp__chrome-devtools__*"
     ],
     "deny": [
-      "Bash(git push --force*)",
-      "Bash(git push * --force*)",
-      "Bash(git push -f*)",
-      "Bash(git push * -f *)",
-      "Bash(git reset --hard*)",
-      "Bash(git clean -f*)",
-      "Bash(git checkout -- .)",
-      "Bash(git restore .)",
       "Bash(rm -rf /*)",
       "Bash(rm -rf ~*)",
       "Bash(sudo *)",
@@ -142,6 +94,80 @@
       "Edit(.env.*)",
       "Write(.env)",
       "Write(.env.*)"
+    ],
+    "ask": [
+      "Bash(git push --force*)",
+      "Bash(git push * --force*)",
+      "Bash(git push -f*)",
+      "Bash(git push * -f *)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -f*)",
+      "Bash(git checkout -- .)",
+      "Bash(git restore .)",
+      "Bash(gh pr comment*)",
+      "Bash(gh issue comment*)",
+      "Bash(gh pr review*)"
+    ],
+    "defaultMode": "auto"
+  },
+  "model": "claude-fable-5[1m]",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/check-protected-branch.sh"
+          },
+          {
+            "type": "command",
+            "command": "CMD=$(cat | jq -r '.tool_input.command // empty' 2>/dev/null); if echo \"$CMD\" | grep -qE '(^|[;&|] *)npx '; then echo 'npx は使わないでください。代わりに pnpm exec を使用してください。' >&2; exit 2; fi"
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/notify-waiting.sh"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/notify-complete.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | grep -q '^gh pr create' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Draft PR 作成完了。fork サブエージェントでコードレビューを実行してください。\"}}' || true"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | grep -qE '^git push' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"pushしました。現在のブランチにOpenなPRがあれば、gh pr view --json body でbodyを取得し、今回の差分（実装内容・QA項目など）が反映されているか確認し、必要なら更新してください。\"}}' || true"
+          }
+        ]
+      }
     ]
-  }
+  },
+  "language": "日本語",
+  "cleanupPeriodDays": 365,
+  "effortLevel": "medium",
+  "tui": "fullscreen",
+  "theme": "dark",
+  "skipDangerousModePermissionPrompt": true,
+  "skipAutoPermissionPrompt": true
 }
