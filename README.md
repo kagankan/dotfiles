@@ -6,7 +6,7 @@
 配布物はツール名のディレクトリでフラットに置く（`claude/` `git/` `karabiner/` `zsh/` `wsl/`）。配置先の対応は `mise.toml` の `[dotfiles]` が定義する。
 
 - **ルート直下で先頭 dot 付きの名前（`.gitignore`、`.claude/` 等）は「このリポジトリ自体に効く設定」だけに使う。** 配布物のディレクトリには dot を付けない。このルールはルート直下の名前にのみ適用する
-- ディレクトリ内のファイル名は、配置先との対応が分かる名前を保つ（原則そのまま。例: `wsl/.wslconfig` → `C:\Users\<name>\.wslconfig`）。配置先とあえて別名にする場合は理由を README に書く（例: `zsh/zshrc-shared`）
+- ディレクトリ内のファイル名は、配置先との対応が分かる名前にする（原則そのまま。例: `wsl/.wslconfig` → `C:\Users\<name>\.wslconfig`）。拡張子は配置先とあわせ、あえて別名にする場合は理由を README に書く（例: `zsh/zshrc-shared.zsh`）
 
 ## セットアップ
 
@@ -52,6 +52,6 @@ mise bootstrap dotfiles status
 
 ## zshrc の扱い
 
-`~/.zshrc` はツール（rbenv、pnpm、safe-chain 等）が自動追記するためマシン固有ファイルとして repo 管理外に置く。共通部分は `zsh/zshrc-shared` → `~/.config/zsh/shared.zsh` に symlink し、`~/.zshrc` の先頭から `source` する（この source 行は `[tasks.bootstrap]` が無ければ挿入する）。
+`~/.zshrc` はツール（rbenv、pnpm、safe-chain 等）が自動追記するためマシン固有ファイルとして repo 管理外に置く。共通部分は `zsh/zshrc-shared.zsh` → `~/.config/zsh/shared.zsh` に symlink し、`~/.zshrc` の先頭から `source` する（この source 行は `[tasks.bootstrap]` が無ければ挿入する）。
 
-ソース側のファイル名を `zshrc` ではなく `zshrc-shared` にしているのは、`~/.zshrc` にそのまま配置されるわけではないことを名前で示すため。
+ソース側のファイル名を配置先と同じ `shared.zsh` にせず `zshrc-shared.zsh` にしているのは、`~/.zshrc` から読み込まれる共有部分であること（かつ `~/.zshrc` そのものとして配置されるわけではないこと）を名前で示すため。

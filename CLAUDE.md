@@ -23,7 +23,7 @@
   - `claude/CLAUDE.local.md` — マシン固有の指示書テンプレ（共通側が `@CLAUDE.local.md` で読み込む）
 - `git/` — グローバル gitignore（→ `~/.config/git/ignore`）
 - `karabiner/` — Karabiner-Elements の設定、外部キーボード向けリマップ（→ `~/.config/karabiner/`）
-- `zsh/` — シェル設定の共通部分（`zsh/zshrc-shared` → `~/.config/zsh/shared.zsh`。`~/.zshrc` はツールが自動追記するため管理外にし、そこから source する）
+- `zsh/` — シェル設定の共通部分（`zsh/zshrc-shared.zsh` → `~/.config/zsh/shared.zsh`。`~/.zshrc` はツールが自動追記するため管理外にし、そこから source する）
 - `wsl/` — WSL のグローバル設定（Windows 側に置くファイルのため手動で配置）
 - `mise.toml` — dotfiles の適用定義（`[dotfiles]`、`[env]`、`[tasks.bootstrap]`、`[tasks.dotfiles-status]`）
 - `mise.wsl.toml` — WSL 用の上書き設定（`mise bootstrap -E wsl` でマージされる）

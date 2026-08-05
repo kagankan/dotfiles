@@ -9,7 +9,7 @@
 CLAUDE_SETTINGS_LAYERS = "claude/settings.json"
 
 [dotfiles]
-"~/.config/zsh/shared.zsh" = "zsh/zshrc-shared"
+"~/.config/zsh/shared.zsh" = "zsh/zshrc-shared.zsh"
 "~/.config/git/ignore" = "git/ignore"
 "~/.claude/CLAUDE.md" = "claude/CLAUDE.md"
 "~/.claude/hooks/check-protected-branch.sh" = "claude/hooks/check-protected-branch.sh"
