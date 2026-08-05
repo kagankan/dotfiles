@@ -29,10 +29,9 @@
       "Bash(git rebase *)",
       "Bash(git stash *)",
       "Bash(git tag *)",
+      "Bash(git rm *)",
       "Bash(git ls-tree *)",
       "Bash(pnpm *)",
-      "Bash(yarn eslint *)",
-      "Bash(yarn prettier *)",
       "Bash(ls *)",
       "Bash(ls)",
       "Bash(pwd)",
@@ -45,6 +44,7 @@
       "Bash(which *)",
       "Bash(echo *)",
       "Bash(mkdir *)",
+      "Bash(rm *)",
       "Bash(cp *)",
       "Bash(mv *)",
       "Bash(touch *)",
@@ -71,6 +71,11 @@
       "Bash(gh workflow view *)",
       "Bash(gh label list *)",
       "Bash(gh search *)",
+      "Bash(curl *)",
+      "Bash(SESSION_DIR=*)",
+      "Bash(~/.claude/scripts/*)",
+      "Agent",
+      "SendMessage",
       "WebFetch",
       "WebSearch",
       "mcp__chrome-devtools__*"
@@ -83,6 +88,7 @@
       "Bash(chmod 777 *)",
       "Bash(printenv*)",
       "Bash(env *)",
+      "Bash(envchain * print*)",
       "Read(.env)",
       "Read(.env.*)",
       "Read(**/*.pem)",
@@ -98,6 +104,7 @@
     "ask": [
       "Bash(git push --force*)",
       "Bash(git push * --force*)",
+      "Bash(git push * --force-with-lease*)",
       "Bash(git push -f*)",
       "Bash(git push * -f *)",
       "Bash(git reset --hard*)",
@@ -110,7 +117,6 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "{{ vars.claude_model }}",
   "hooks": {
     "PreToolUse": [
       {
@@ -122,7 +128,30 @@
           },
           {
             "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/no-git-c-flag.sh"
+          },
+          {
+            "type": "command",
+            "command": "bash \"$HOME\"/.claude/hooks/no-compound-commands.sh"
+          },
+          {
+            "type": "command",
             "command": "CMD=$(cat | jq -r '.tool_input.command // empty' 2>/dev/null); if echo \"$CMD\" | grep -qE '(^|[;&|] *)npx '; then echo 'npx は使わないでください。代わりに pnpm exec を使用してください。' >&2; exit 2; fi"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | grep -q '^gh pr create' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Draft PR 作成完了。fork サブエージェントでコードレビューを実行してください。\"}}' || true"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.command' | grep -qE '^git push' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"pushしました。現在のブランチにOpenなPRがあれば、gh pr view --json body でbodyを取得し、今回の差分（実装内容・QA項目など）が反映されているか確認し、必要なら更新してください。\"}}' || true"
           }
         ]
       }
@@ -146,28 +175,10 @@
           }
         ]
       }
-    ],
-    "PostToolUse": [
-      {
-        "matcher": "Bash",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "jq -r '.tool_input.command' | grep -q '^gh pr create' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"Draft PR 作成完了。fork サブエージェントでコードレビューを実行してください。\"}}' || true"
-          },
-          {
-            "type": "command",
-            "command": "jq -r '.tool_input.command' | grep -qE '^git push' && echo '{\"hookSpecificOutput\":{\"hookEventName\":\"PostToolUse\",\"additionalContext\":\"pushしました。現在のブランチにOpenなPRがあれば、gh pr view --json body でbodyを取得し、今回の差分（実装内容・QA項目など）が反映されているか確認し、必要なら更新してください。\"}}' || true"
-          }
-        ]
-      }
     ]
   },
   "language": "日本語",
-  "cleanupPeriodDays": 365,
   "effortLevel": "medium",
-  "tui": "{{ vars.claude_tui }}",
-  "theme": "{{ vars.claude_theme }}",
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true
 }

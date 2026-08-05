@@ -13,22 +13,27 @@
 配布物はツール名のディレクトリでフラットに置く。配置先は `mise.toml` の `[dotfiles]` が定義する。
 
 - `claude/` — Claude Code のユーザーレベル設定（`~/.claude/` に配布する共有テンプレ）
-  - `claude/settings.json` — macOS 用（template モードで変数を埋めて配置）
-  - `claude/settings.wsl.json` — WSL 用
+  - `claude/settings.json` — 全マシン共通のベース（symlink せず、マージして `~/.claude/settings.json` を生成する）
+  - `claude/settings.wsl.json` — WSL 差分レイヤー（`mise.wsl.toml` がマージ元に足す）
+  - `claude/settings.machine.json` — マシン固有設定のテンプレ（`~/.claude/settings.machine.json` に copy-once）
+  - `claude/merge-settings.jq` — 上記レイヤーを重ねる jq プログラム
   - `claude/hooks/` — 通知音スクリプト等
+  - `claude/scripts/` — CLAUDE.md から呼ぶスクリプト（`session-dir.sh` 等）
   - `claude/CLAUDE.md` — 全プロジェクト共通の指示書（symlink 先: `~/.claude/CLAUDE.md`）
+  - `claude/CLAUDE.local.md` — マシン固有の指示書テンプレ（共通側が `@CLAUDE.local.md` で読み込む）
 - `git/` — グローバル gitignore（→ `~/.config/git/ignore`）
 - `karabiner/` — Karabiner-Elements の設定、外部キーボード向けリマップ（→ `~/.config/karabiner/`）
-- `zsh/` — シェル設定（→ `~/.zshrc`）
+- `zsh/` — シェル設定の共通部分（`zsh/zshrc-shared` → `~/.config/zsh/shared.zsh`。`~/.zshrc` はツールが自動追記するため管理外にし、そこから source する）
 - `wsl/` — WSL のグローバル設定（Windows 側に置くファイルのため手動で配置）
-- `mise.toml` — dotfiles の適用定義（`[dotfiles]` と `[tasks.bootstrap]`）
+- `mise.toml` — dotfiles の適用定義（`[dotfiles]`、`[env]`、`[tasks.bootstrap]`、`[tasks.dotfiles-status]`）
 - `mise.wsl.toml` — WSL 用の上書き設定（`mise bootstrap -E wsl` でマージされる）
 
 ## 規約
 
 - コメント・説明は日本語で書く（コード中のコメント、スクリプトの echo、description フィールド等すべて）
 - `claude/` 配下のファイルは共有テンプレとして機能するため、スクリプトが参照するファイル（許可リスト等）も空テンプレの状態で含める
-- マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
+- マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`、`settings.machine.json`、`CLAUDE.local.md`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
+- マシン固有ファイルは repo 内ではなく `~/.claude/` 側に置く。repo を消して clone し直してもマシン固有設定が残るようにするため
 
 ## 注意事項
 

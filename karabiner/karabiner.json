@@ -7,7 +7,31 @@
                         "description": "外部キーボード: Home/End → 行頭/行末（PC-Style）",
                         "manipulators": [
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    },
+                                    {
+                                        "bundle_identifiers": [
+                                            "^com\\.google\\.Chrome$",
+                                            "^org\\.mozilla\\.firefox$",
+                                            "^com\\.apple\\.Safari$",
+                                            "^com\\.microsoft\\.Edge",
+                                            "^com\\.brave\\.Browser$"
+                                        ],
+                                        "type": "frontmost_application_unless"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "home",
                                     "modifiers": { "optional": ["shift"] }
@@ -18,28 +42,34 @@
                                         "modifiers": ["left_command"]
                                     }
                                 ],
+                                "type": "basic"
+                            },
+                            {
                                 "conditions": [
                                     {
-                                        "type": "device_if",
                                         "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
                                     },
                                     {
-                                        "type": "frontmost_application_unless",
                                         "bundle_identifiers": [
                                             "^com\\.google\\.Chrome$",
                                             "^org\\.mozilla\\.firefox$",
                                             "^com\\.apple\\.Safari$",
                                             "^com\\.microsoft\\.Edge",
                                             "^com\\.brave\\.Browser$"
-                                        ]
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
-                                ]
-                            },
-                            {
-                                "type": "basic",
+                                ],
                                 "from": {
                                     "key_code": "home",
                                     "modifiers": { "optional": ["shift"] }
@@ -50,28 +80,34 @@
                                         "modifiers": ["left_control"]
                                     }
                                 ],
+                                "type": "basic"
+                            },
+                            {
                                 "conditions": [
                                     {
-                                        "type": "device_if",
                                         "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
                                     },
                                     {
-                                        "type": "frontmost_application_if",
                                         "bundle_identifiers": [
                                             "^com\\.google\\.Chrome$",
                                             "^org\\.mozilla\\.firefox$",
                                             "^com\\.apple\\.Safari$",
                                             "^com\\.microsoft\\.Edge",
                                             "^com\\.brave\\.Browser$"
-                                        ]
+                                        ],
+                                        "type": "frontmost_application_unless"
                                     }
-                                ]
-                            },
-                            {
-                                "type": "basic",
+                                ],
                                 "from": {
                                     "key_code": "end",
                                     "modifiers": { "optional": ["shift"] }
@@ -82,28 +118,34 @@
                                         "modifiers": ["left_command"]
                                     }
                                 ],
+                                "type": "basic"
+                            },
+                            {
                                 "conditions": [
                                     {
-                                        "type": "device_if",
                                         "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
                                     },
                                     {
-                                        "type": "frontmost_application_unless",
                                         "bundle_identifiers": [
                                             "^com\\.google\\.Chrome$",
                                             "^org\\.mozilla\\.firefox$",
                                             "^com\\.apple\\.Safari$",
                                             "^com\\.microsoft\\.Edge",
                                             "^com\\.brave\\.Browser$"
-                                        ]
+                                        ],
+                                        "type": "frontmost_application_if"
                                     }
-                                ]
-                            },
-                            {
-                                "type": "basic",
+                                ],
                                 "from": {
                                     "key_code": "end",
                                     "modifiers": { "optional": ["shift"] }
@@ -114,31 +156,30 @@
                                         "modifiers": ["left_control"]
                                     }
                                 ],
-                                "conditions": [
-                                    {
-                                        "type": "device_if",
-                                        "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
-                                    },
-                                    {
-                                        "type": "frontmost_application_if",
-                                        "bundle_identifiers": [
-                                            "^com\\.google\\.Chrome$",
-                                            "^org\\.mozilla\\.firefox$",
-                                            "^com\\.apple\\.Safari$",
-                                            "^com\\.microsoft\\.Edge",
-                                            "^com\\.brave\\.Browser$"
-                                        ]
-                                    }
-                                ]
+                                "type": "basic"
                             },
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "home",
-                                    "modifiers": { "mandatory": ["control"], "optional": ["shift"] }
+                                    "modifiers": {
+                                        "mandatory": ["control"],
+                                        "optional": ["shift"]
+                                    }
                                 },
                                 "to": [
                                     {
@@ -146,21 +187,30 @@
                                         "modifiers": ["left_command"]
                                     }
                                 ],
-                                "conditions": [
-                                    {
-                                        "type": "device_if",
-                                        "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
-                                    }
-                                ]
+                                "type": "basic"
                             },
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "end",
-                                    "modifiers": { "mandatory": ["control"], "optional": ["shift"] }
+                                    "modifiers": {
+                                        "mandatory": ["control"],
+                                        "optional": ["shift"]
+                                    }
                                 },
                                 "to": [
                                     {
@@ -168,15 +218,7 @@
                                         "modifiers": ["left_command"]
                                     }
                                 ],
-                                "conditions": [
-                                    {
-                                        "type": "device_if",
-                                        "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
-                                    }
-                                ]
+                                "type": "basic"
                             }
                         ]
                     },
@@ -184,10 +226,27 @@
                         "description": "外部キーボード: Cmd+矢印 → Option+矢印（単語単位移動）",
                         "manipulators": [
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "left_arrow",
-                                    "modifiers": { "mandatory": ["command"], "optional": ["shift"] }
+                                    "modifiers": {
+                                        "mandatory": ["command"],
+                                        "optional": ["shift"]
+                                    }
                                 },
                                 "to": [
                                     {
@@ -195,21 +254,30 @@
                                         "modifiers": ["option"]
                                     }
                                 ],
-                                "conditions": [
-                                    {
-                                        "type": "device_if",
-                                        "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
-                                    }
-                                ]
+                                "type": "basic"
                             },
                             {
-                                "type": "basic",
+                                "conditions": [
+                                    {
+                                        "identifiers": [
+                                            {
+                                                "product_id": 99,
+                                                "vendor_id": 7247
+                                            },
+                                            {
+                                                "product_id": 33639,
+                                                "vendor_id": 9354
+                                            }
+                                        ],
+                                        "type": "device_if"
+                                    }
+                                ],
                                 "from": {
                                     "key_code": "right_arrow",
-                                    "modifiers": { "mandatory": ["command"], "optional": ["shift"] }
+                                    "modifiers": {
+                                        "mandatory": ["command"],
+                                        "optional": ["shift"]
+                                    }
                                 },
                                 "to": [
                                     {
@@ -217,15 +285,7 @@
                                         "modifiers": ["option"]
                                     }
                                 ],
-                                "conditions": [
-                                    {
-                                        "type": "device_if",
-                                        "identifiers": [
-                                            { "vendor_id": 7247, "product_id": 99 },
-                                            { "vendor_id": 9354, "product_id": 33639 }
-                                        ]
-                                    }
-                                ]
+                                "type": "basic"
                             }
                         ]
                     }
@@ -238,7 +298,6 @@
                         "product_id": 99,
                         "vendor_id": 7247
                     },
-                    "disable_built_in_keyboard_if_exists": true,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "left_command" },
@@ -256,7 +315,6 @@
                         "product_id": 33639,
                         "vendor_id": 9354
                     },
-                    "disable_built_in_keyboard_if_exists": true,
                     "simple_modifications": [
                         {
                             "from": { "key_code": "caps_lock" },
@@ -271,12 +329,12 @@
                             "to": [{ "key_code": "japanese_kana" }]
                         },
                         {
-                            "from": { "key_code": "left_control" },
-                            "to": [{ "key_code": "left_command" }]
-                        },
-                        {
                             "from": { "key_code": "left_command" },
                             "to": [{ "key_code": "left_control" }]
+                        },
+                        {
+                            "from": { "key_code": "left_control" },
+                            "to": [{ "key_code": "left_command" }]
                         }
                     ]
                 }

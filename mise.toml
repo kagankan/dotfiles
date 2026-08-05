@@ -1,21 +1,21 @@
 # dotfiles を mise bootstrap で適用するための設定
 # 適用方法: mise bootstrap（WSL では mise bootstrap -E wsl）
 # 状態確認: mise bootstrap dotfiles status
+# settings.json 状態確認: mise run dotfiles-status
 
-# settings.json テンプレートのデフォルト値。
-# マシン固有の値は mise.local.toml（git 管理外）の [vars] で上書きする。
-[vars]
-claude_model = "claude-fable-5"
-claude_theme = "dark"
-claude_tui = "fullscreen"
+# settings.json のマージ元（左から順に重ねる。最後に ~/.claude/settings.machine.json が乗る）。
+# WSL では mise.wsl.toml が WSL 差分レイヤーを足す。
+[env]
+CLAUDE_SETTINGS_LAYERS = "claude/settings.json"
 
 [dotfiles]
-"~/.zshrc" = "zsh/zshrc"
+"~/.config/zsh/shared.zsh" = "zsh/zshrc-shared"
 "~/.config/git/ignore" = "git/ignore"
 "~/.claude/CLAUDE.md" = "claude/CLAUDE.md"
-# template モード: {{ vars.* }} をマシン固有値で埋めて実ファイルとして生成する
-"~/.claude/settings.json" = { source = "claude/settings.json", mode = "template" }
 "~/.claude/hooks/check-protected-branch.sh" = "claude/hooks/check-protected-branch.sh"
+"~/.claude/hooks/no-git-c-flag.sh" = "claude/hooks/no-git-c-flag.sh"
+"~/.claude/hooks/no-compound-commands.sh" = "claude/hooks/no-compound-commands.sh"
+"~/.claude/scripts/session-dir.sh" = "claude/scripts/session-dir.sh"
 "~/.claude/hooks/notify-complete.sh" = "claude/hooks/notify-complete.sh"
 "~/.claude/hooks/notify-waiting.sh" = "claude/hooks/notify-waiting.sh"
 # macOS 専用（WSL では未使用の symlink ができるだけで無害）
@@ -25,7 +25,7 @@ claude_tui = "fullscreen"
 # マシン固有の設定ファイルは symlink にせず、存在しない場合のみテンプレからコピーする
 # （マシン側で加えた編集を上書きしないため）。
 [tasks.bootstrap]
-description = "マシン固有ファイルをテンプレから初期化（既存なら触らない）"
+description = "マシン固有ファイルを初期化し settings.json をマージ生成する"
 shell = "bash -c"
 run = '''
 init_from_template() {
@@ -38,11 +38,47 @@ init_from_template() {
 }
 init_from_template claude/main-branch-allowed-repos.txt "$HOME/.claude/main-branch-allowed-repos.txt"
 init_from_template claude/hooks/project-name.sh "$HOME/.claude/hooks/project-name.sh"
+init_from_template claude/settings.machine.json "$HOME/.claude/settings.machine.json"
+init_from_template claude/CLAUDE.local.md "$HOME/.claude/CLAUDE.local.md"
 
-# template 生成後の settings.json が壊れた JSON になっていないか検証する
-if command -v jq >/dev/null 2>&1; then
-  jq empty "$HOME/.claude/settings.json" && echo "settings.json: JSON 妥当性チェック OK"
+# ~/.zshrc に共通設定の source 行がなければ先頭に挿入
+if [ -f "$HOME/.zshrc" ]; then
+  if ! grep -q 'source.*shared\.zsh' "$HOME/.zshrc"; then
+    printf '%s\n%s' 'source ~/.config/zsh/shared.zsh' "$(cat "$HOME/.zshrc")" > "$HOME/.zshrc"
+    echo "~/.zshrc に source 行を追加しました"
+  fi
 else
-  echo "警告: jq が無いため settings.json の妥当性チェックをスキップしました" >&2
+  echo 'source ~/.config/zsh/shared.zsh' > "$HOME/.zshrc"
+  echo "~/.zshrc を作成しました"
+fi
+
+# settings.json をマージ生成。
+# 一時ファイル経由で mv するのは、~/.claude/settings.json が symlink として
+# 残っていた場合にリダイレクトが symlink 先（repo 内のファイル）を壊すため。
+if command -v jq >/dev/null 2>&1; then
+  tmp=$(mktemp)
+  jq -s -f claude/merge-settings.jq $CLAUDE_SETTINGS_LAYERS "$HOME/.claude/settings.machine.json" > "$tmp"
+  jq empty "$tmp"
+  mv "$tmp" "$HOME/.claude/settings.json"
+  echo "settings.json: マージ & JSON 妥当性チェック OK"
+else
+  echo "警告: jq が無いため settings.json のマージをスキップしました" >&2
+fi
+'''
+
+[tasks.dotfiles-status]
+description = "settings.json のマージ状態を確認"
+shell = "bash -c"
+run = '''
+if [ ! -f "$HOME/.claude/settings.machine.json" ]; then
+  echo "~/.claude/settings.machine.json  missing (run mise run bootstrap)"
+  exit 0
+fi
+merged=$(jq -s -f claude/merge-settings.jq $CLAUDE_SETTINGS_LAYERS "$HOME/.claude/settings.machine.json")
+current=$(jq '.' "$HOME/.claude/settings.json" 2>/dev/null)
+if [ "$merged" = "$current" ]; then
+  echo "~/.claude/settings.json  up-to-date"
+else
+  echo "~/.claude/settings.json  differs (run mise run bootstrap to update)"
 fi
 '''
