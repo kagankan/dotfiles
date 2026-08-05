@@ -6,6 +6,8 @@
 `mise bootstrap` で `~/.claude/` や `~/.config/` 配下に symlink を張って適用する。
 適用対象は `mise.toml` の `[dotfiles]` で宣言し、WSL 向けの差分は `mise.wsl.toml` で上書きする。
 
+**作業前に `README.md` を読むこと。** ディレクトリ構成の規約（先頭 dot の使い分け）や、settings.json のテンプレート化・マシン固有設定の運用ルールは README に書いてある。
+
 ## ディレクトリ構成
 
 配布物はツール名のディレクトリでフラットに置く。配置先は `mise.toml` の `[dotfiles]` が定義する。
@@ -25,7 +27,6 @@
 ## 規約
 
 - コメント・説明は日本語で書く（コード中のコメント、スクリプトの echo、description フィールド等すべて）
-- dot 付きのファイル・ディレクトリ（`.gitignore`、`.claude/` 等）は「このリポジトリ自体に効く設定」のみに使う。配布物はツール名のディレクトリに dot 無しのファイル名で置く（例: `zsh/zshrc`）
 - `claude/` 配下のファイルは共有テンプレとして機能するため、スクリプトが参照するファイル（許可リスト等）も空テンプレの状態で含める
 - マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
 

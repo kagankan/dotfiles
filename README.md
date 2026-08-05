@@ -1,6 +1,13 @@
 # dotfiles
 設定ファイル置き場
 
+## ディレクトリ構成の規約
+
+配布物はツール名のディレクトリでフラットに置く（`claude/` `git/` `karabiner/` `zsh/` `wsl/`）。配置先の対応は `mise.toml` の `[dotfiles]` が定義する。
+
+- **先頭 dot 付きの名前（`.gitignore`、`.claude/` 等）は「このリポジトリ自体に効く設定」だけに使う。** 配布物には使わない
+- 配布物のファイル名は dot 無しにする（例: `zsh/zshrc` → 配置先が `~/.zshrc`）。dot が必要なのは配置先だけで、ソース側に付けると「repo に効くのか配布物なのか」の区別が崩れるため
+
 ## セットアップ
 
 [mise](https://mise.jdx.dev/) が必要（`curl https://mise.run | sh` または `brew install mise`）。
