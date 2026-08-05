@@ -1,0 +1,5 @@
+# WSL 用の上書き設定。mise bootstrap -E wsl（または MISE_ENV=wsl）で mise.toml にマージされる
+# .wslconfig は Windows 側（C:\Users\<name>\.wslconfig）に置くファイルのため手動で配置する
+
+[dotfiles]
+"~/.claude/settings.json" = "claude/settings.wsl.json"

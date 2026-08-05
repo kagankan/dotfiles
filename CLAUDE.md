@@ -3,7 +3,8 @@
 ## リポジトリ概要
 
 個人の dotfiles。macOS と WSL で使う設定ファイルを管理している。
-`setup.sh` で `~/.claude/` や `~/.config/` 配下に symlink を張って適用する。
+`mise bootstrap` で `~/.claude/` や `~/.config/` 配下に symlink を張って適用する（`setup.sh` はそのラッパー）。
+適用対象は `mise.toml` の `[dotfiles]` で宣言し、WSL 向けの差分は `mise.wsl.toml` で上書きする。
 
 ## ディレクトリ構成
 
@@ -13,13 +14,16 @@
   - `claude/settings.wsl.json` — WSL 用
   - `claude/hooks/` — 通知音スクリプト等
   - `claude/CLAUDE.md` — 全プロジェクト共通の指示書（symlink 先: `~/.claude/CLAUDE.md`）
-- `.wslconfig` — WSL のグローバル設定
+- `mise.toml` — dotfiles の適用定義（`[dotfiles]` と `[tasks.bootstrap]`）
+- `mise.wsl.toml` — WSL 用の上書き設定（`mise bootstrap -E wsl` でマージされる）
+- `.wslconfig` — WSL のグローバル設定（Windows 側に置くファイルのため手動で配置）
 - `.zshrc` — シェル設定
 
 ## 規約
 
 - コメント・説明は日本語で書く（コード中のコメント、スクリプトの echo、description フィールド等すべて）
 - `claude/` 配下のファイルは共有テンプレとして機能するため、スクリプトが参照するファイル（許可リスト等）も空テンプレの状態で含める
+- マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
 
 ## 注意事項
 

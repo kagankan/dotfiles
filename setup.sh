@@ -1,36 +1,24 @@
 #!/bin/bash
 set -euo pipefail
+cd "$(dirname "$0")"
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-CLAUDE_DIR="$HOME/.claude"
-
-mkdir -p "$CLAUDE_DIR"
-
-link() {
-  local src="$1" dst="$2"
-  if [ -L "$dst" ]; then
-    rm "$dst"
-  elif [ -e "$dst" ]; then
-    echo "SKIP: $dst は既存ファイル（symlink ではない）。必要なら手動でバックアップしてください。" >&2
-    return
-  fi
-  ln -sf "$src" "$dst"
-  echo "  $dst -> $src"
-}
-
-echo "=== Claude Code ==="
-link "$DOTFILES_DIR/claude/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-link "$DOTFILES_DIR/claude/settings.json" "$CLAUDE_DIR/settings.json"
-link "$DOTFILES_DIR/claude/hooks" "$CLAUDE_DIR/hooks"
-
-# マシン固有の設定ファイルは存在しなければテンプレからコピー（上書きしない）
-if [ ! -f "$CLAUDE_DIR/main-branch-allowed-repos.txt" ]; then
-  cp "$DOTFILES_DIR/claude/main-branch-allowed-repos.txt" "$CLAUDE_DIR/main-branch-allowed-repos.txt"
-  echo "  $CLAUDE_DIR/main-branch-allowed-repos.txt（テンプレからコピー）"
+# dotfiles の適用は mise bootstrap に委譲している（設定は mise.toml / mise.wsl.toml を参照）
+if command -v mise >/dev/null 2>&1; then
+  MISE=mise
+elif [ -x "$HOME/.local/bin/mise" ]; then
+  MISE="$HOME/.local/bin/mise"
+else
+  echo "mise が見つかりません。先にインストールしてください:" >&2
+  echo "  curl https://mise.run | sh" >&2
+  echo "  （macOS なら brew install mise でも可）" >&2
+  exit 1
 fi
 
-echo "=== Karabiner-Elements ==="
-mkdir -p "$HOME/.config/karabiner"
-link "$DOTFILES_DIR/.config/karabiner/karabiner.json" "$HOME/.config/karabiner/karabiner.json"
+"$MISE" trust
 
-echo "完了"
+# WSL では settings.wsl.json を使うため環境を切り替える
+if grep -qi microsoft /proc/version 2>/dev/null; then
+  exec "$MISE" bootstrap -E wsl
+else
+  exec "$MISE" bootstrap
+fi

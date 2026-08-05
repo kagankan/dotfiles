@@ -1,0 +1,32 @@
+# dotfiles を mise bootstrap で適用するための設定
+# 適用方法: ./setup.sh または mise bootstrap（WSL では mise bootstrap -E wsl）
+# 状態確認: mise bootstrap dotfiles status
+
+[dotfiles]
+"~/.zshrc" = ".zshrc"
+"~/.claude/CLAUDE.md" = "claude/CLAUDE.md"
+"~/.claude/settings.json" = "claude/settings.json"
+"~/.claude/hooks/check-protected-branch.sh" = "claude/hooks/check-protected-branch.sh"
+"~/.claude/hooks/notify-complete.sh" = "claude/hooks/notify-complete.sh"
+"~/.claude/hooks/notify-waiting.sh" = "claude/hooks/notify-waiting.sh"
+# macOS 専用（WSL では未使用の symlink ができるだけで無害）
+"~/.config/karabiner/karabiner.json" = ".config/karabiner/karabiner.json"
+
+# mise bootstrap の最終段で自動実行されるタスク。
+# マシン固有の設定ファイルは symlink にせず、存在しない場合のみテンプレからコピーする
+# （マシン側で加えた編集を上書きしないため）。
+[tasks.bootstrap]
+description = "マシン固有ファイルをテンプレから初期化（既存なら触らない）"
+shell = "bash -c"
+run = '''
+init_from_template() {
+  local src="$1" dst="$2"
+  if [ ! -f "$dst" ]; then
+    mkdir -p "$(dirname "$dst")"
+    cp "$src" "$dst"
+    echo "$dst をテンプレから初期化しました"
+  fi
+}
+init_from_template claude/main-branch-allowed-repos.txt "$HOME/.claude/main-branch-allowed-repos.txt"
+init_from_template claude/hooks/project-name.sh "$HOME/.claude/hooks/project-name.sh"
+'''

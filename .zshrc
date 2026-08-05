@@ -19,3 +19,10 @@ function left-prompt {
 }
 
 PROMPT=`left-prompt`
+
+# mise（インストール済みの場合のみ有効化）
+if [ -x "$HOME/.local/bin/mise" ]; then
+  eval "$("$HOME/.local/bin/mise" activate zsh)"
+elif command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
