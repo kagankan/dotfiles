@@ -3,13 +3,18 @@
 
 ## セットアップ
 
-[mise](https://mise.jdx.dev/) が必要（`curl https://mise.run | sh`）。
+[mise](https://mise.jdx.dev/) が必要（`curl https://mise.run | sh` または `brew install mise`）。
 
 ```sh
-./setup.sh  # 内部で mise bootstrap を実行（WSL では自動で -E wsl が付く）
+mise trust
+mise bootstrap        # WSL では mise bootstrap -E wsl
 ```
 
-状態確認は `mise bootstrap dotfiles status`。
+状態確認（宣言と実マシンの乖離チェック）:
+
+```sh
+mise bootstrap dotfiles status
+```
 
 ## Claude settings のマシン固有設定
 

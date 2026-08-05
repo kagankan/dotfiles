@@ -1,5 +1,5 @@
 # dotfiles を mise bootstrap で適用するための設定
-# 適用方法: ./setup.sh または mise bootstrap（WSL では mise bootstrap -E wsl）
+# 適用方法: mise bootstrap（WSL では mise bootstrap -E wsl）
 # 状態確認: mise bootstrap dotfiles status
 
 # settings.json テンプレートのデフォルト値。

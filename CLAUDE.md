@@ -3,7 +3,7 @@
 ## リポジトリ概要
 
 個人の dotfiles。macOS と WSL で使う設定ファイルを管理している。
-`mise bootstrap` で `~/.claude/` や `~/.config/` 配下に symlink を張って適用する（`setup.sh` はそのラッパー）。
+`mise bootstrap` で `~/.claude/` や `~/.config/` 配下に symlink を張って適用する。
 適用対象は `mise.toml` の `[dotfiles]` で宣言し、WSL 向けの差分は `mise.wsl.toml` で上書きする。
 
 ## ディレクトリ構成
