@@ -2,10 +2,18 @@
 # 適用方法: ./setup.sh または mise bootstrap（WSL では mise bootstrap -E wsl）
 # 状態確認: mise bootstrap dotfiles status
 
+# settings.json テンプレートのデフォルト値。
+# マシン固有の値は mise.local.toml（git 管理外）の [vars] で上書きする。
+[vars]
+claude_model = "claude-fable-5"
+claude_theme = "dark"
+claude_tui = "fullscreen"
+
 [dotfiles]
 "~/.zshrc" = ".zshrc"
 "~/.claude/CLAUDE.md" = "claude/CLAUDE.md"
-"~/.claude/settings.json" = "claude/settings.json"
+# template モード: {{ vars.* }} をマシン固有値で埋めて実ファイルとして生成する
+"~/.claude/settings.json" = { source = "claude/settings.json", mode = "template" }
 "~/.claude/hooks/check-protected-branch.sh" = "claude/hooks/check-protected-branch.sh"
 "~/.claude/hooks/notify-complete.sh" = "claude/hooks/notify-complete.sh"
 "~/.claude/hooks/notify-waiting.sh" = "claude/hooks/notify-waiting.sh"
@@ -29,4 +37,11 @@ init_from_template() {
 }
 init_from_template claude/main-branch-allowed-repos.txt "$HOME/.claude/main-branch-allowed-repos.txt"
 init_from_template claude/hooks/project-name.sh "$HOME/.claude/hooks/project-name.sh"
+
+# template 生成後の settings.json が壊れた JSON になっていないか検証する
+if command -v jq >/dev/null 2>&1; then
+  jq empty "$HOME/.claude/settings.json" && echo "settings.json: JSON 妥当性チェック OK"
+else
+  echo "警告: jq が無いため settings.json の妥当性チェックをスキップしました" >&2
+fi
 '''

@@ -1,0 +1,2 @@
+# マシン固有の mise 設定（settings.json テンプレートの vars 上書き等）
+mise.local.toml

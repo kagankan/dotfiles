@@ -110,7 +110,7 @@
     ],
     "defaultMode": "auto"
   },
-  "model": "claude-fable-5[1m]",
+  "model": "{{ vars.claude_model }}",
   "hooks": {
     "PreToolUse": [
       {
@@ -166,8 +166,8 @@
   "language": "日本語",
   "cleanupPeriodDays": 365,
   "effortLevel": "medium",
-  "tui": "fullscreen",
-  "theme": "dark",
+  "tui": "{{ vars.claude_tui }}",
+  "theme": "{{ vars.claude_theme }}",
   "skipDangerousModePermissionPrompt": true,
   "skipAutoPermissionPrompt": true
 }
