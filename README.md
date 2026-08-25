@@ -50,6 +50,21 @@ mise bootstrap dotfiles status
 
 `claude/CLAUDE.md`（→ `~/.claude/CLAUDE.md`）は先頭で `@CLAUDE.local.md` を読み込む。マシン固有の指示は `~/.claude/CLAUDE.local.md` に書く（`claude/CLAUDE.local.md` をテンプレとして copy-once する）。settings.json と違いマージ処理は不要で、Claude Code の import 機能に任せている。
 
+## Claude skill の追加
+
+skill は `claude/skills/<skill 名>/SKILL.md` に置き、`mise.toml` の `[dotfiles]` で **ディレクトリ単位** に symlink する。
+
+```toml
+"~/.claude/skills/<skill 名>" = "claude/skills/<skill 名>"
+```
+
+```sh
+mise bootstrap    # symlink を張る
+```
+
+- ファイル単位ではなくディレクトリ単位にするのは、`SKILL.md` 以外の補助ファイル（参照ドキュメント、スクリプト）が増えても宣言を変えずに済むため
+- `~/.claude/skills` 自体は symlink にしない。Homebrew 等のツールが入れる skill（`hunk-review` 等）が同じディレクトリに同居するため
+
 ## zshrc の扱い
 
 `~/.zshrc` はツール（rbenv、pnpm、safe-chain 等）が自動追記するためマシン固有ファイルとして repo 管理外に置く。共通部分は `zsh/zshrc-shared.zsh` → `~/.config/zsh/shared.zsh` に symlink し、`~/.zshrc` の先頭から `source` する（この source 行は `[tasks.bootstrap]` が無ければ挿入する）。

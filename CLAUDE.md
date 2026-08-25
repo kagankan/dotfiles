@@ -19,6 +19,7 @@
   - `claude/merge-settings.jq` — 上記レイヤーを重ねる jq プログラム
   - `claude/hooks/` — 通知音スクリプト等
   - `claude/scripts/` — CLAUDE.md から呼ぶスクリプト（`session-dir.sh` 等）
+  - `claude/skills/<skill 名>/` — Claude Code の skill（skill ごとにディレクトリ単位で `~/.claude/skills/<skill 名>` へ symlink する）
   - `claude/CLAUDE.md` — 全プロジェクト共通の指示書（symlink 先: `~/.claude/CLAUDE.md`）
   - `claude/CLAUDE.local.md` — マシン固有の指示書テンプレ（共通側が `@CLAUDE.local.md` で読み込む）
 - `git/` — グローバル gitignore（→ `~/.config/git/ignore`）

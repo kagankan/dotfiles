@@ -16,6 +16,9 @@ CLAUDE_SETTINGS_LAYERS = "claude/settings.json"
 "~/.claude/hooks/no-git-c-flag.sh" = "claude/hooks/no-git-c-flag.sh"
 "~/.claude/hooks/no-compound-commands.sh" = "claude/hooks/no-compound-commands.sh"
 "~/.claude/scripts/session-dir.sh" = "claude/scripts/session-dir.sh"
+# skill はディレクトリ単位で symlink する（SKILL.md 以外の補助ファイルが増えても宣言を変えずに済む）。
+# ~/.claude/skills 自体は symlink にしない（ツールが入れる skill が同居するため）。
+"~/.claude/skills/sanitize-artifacts" = "claude/skills/sanitize-artifacts"
 "~/.claude/hooks/notify-complete.sh" = "claude/hooks/notify-complete.sh"
 "~/.claude/hooks/notify-waiting.sh" = "claude/hooks/notify-waiting.sh"
 # macOS 専用（WSL では未使用の symlink ができるだけで無害）
