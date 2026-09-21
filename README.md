@@ -44,9 +44,11 @@ Claude Code は 1 つの設定ディレクトリに 1 アカウントしか保�
 ```toml
 # ~/.config/mise/config.toml
 [env]
-CLAUDE_PROFILES = "default personal work"           # mise bootstrap がこの名前でディレクトリを用意する
-CLAUDE_CONFIG_DIR = "~/.claude-profiles/default"    # 既定はどのアカウントも使わないプロファイル
+CLAUDE_PROFILES = "default personal work"                  # mise bootstrap がこの名前でディレクトリを用意する
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/.claude-profiles/default" # 既定はどのアカウントも使わないプロファイル
 ```
+
+**`~` は使わない。** mise の `[env]` の値はチルダ展開されないため、`~/.claude-profiles/…` と書くと作業ディレクトリ直下に `~` という名前のディレクトリが作られ、プロファイルがそこに新規作成される。`{{env.HOME}}` を使う。
 
 ```sh
 mise bootstrap    # プロファイルの作成と共有設定の配布
@@ -57,7 +59,7 @@ mise bootstrap    # プロファイルの作成と共有設定の配布
 ```toml
 # ~/<作業ディレクトリ>/mise.toml
 [env]
-CLAUDE_CONFIG_DIR = "~/.claude-profiles/work"
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/.claude-profiles/work"
 ```
 
 ```sh
