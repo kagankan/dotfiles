@@ -97,9 +97,7 @@
       "Read(//Users/**/.aws/**)",
       "Read(//Users/**/.ssh/**)",
       "Edit(.env)",
-      "Edit(.env.*)",
-      "Write(.env)",
-      "Write(.env.*)"
+      "Edit(.env.*)"
     ],
     "ask": [
       "Bash(git push --force*)",
