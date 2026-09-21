@@ -68,6 +68,49 @@ if command -v jq >/dev/null 2>&1; then
 else
   echo "警告: jq が無いため settings.json のマージをスキップしました" >&2
 fi
+
+# Claude Code のアカウントを分けるマシンだけ、~/.claude の共有設定を各プロファイルへ配る。
+# プロファイル一覧 CLAUDE_PROFILES はマシン側（~/.config/mise/config.toml の [env]）で宣言するため、
+# 1 マシン 1 アカウントのマシンでは未設定のままこのループが回らない。
+link_to_claude() {
+  local dst="$1" src="$2"
+  if [ ! -e "$src" ]; then
+    echo "警告: $src が無いため symlink を張りませんでした" >&2
+    return 0
+  fi
+  if [ -L "$dst" ]; then
+    if [ "$(readlink "$dst")" = "$src" ]; then
+      return 0
+    fi
+    rm "$dst"
+  elif [ -e "$dst" ]; then
+    echo "警告: $dst が実ファイルのため symlink を張りませんでした" >&2
+    return 0
+  fi
+  mkdir -p "$(dirname "$dst")"
+  ln -s "$src" "$dst"
+  echo "$dst -> $src"
+}
+
+for profile in ${CLAUDE_PROFILES:-}; do
+  dir="$HOME/.claude-profiles/$profile"
+  mkdir -p "$dir/skills"
+  # Claude Code が設定ディレクトリ直下からしか読まないものだけを配る。
+  # hooks・scripts・マシン固有ファイルは ~/.claude を絶対パスで参照するため配らない。
+  link_to_claude "$dir/CLAUDE.md" "$HOME/.claude/CLAUDE.md"
+  link_to_claude "$dir/CLAUDE.local.md" "$HOME/.claude/CLAUDE.local.md"
+  # skill は repo が配布するものだけを 1 つずつ張る（プロファイル側にツールが入れる skill が同居するため）
+  for skill in claude/skills/*; do
+    name=$(basename "$skill")
+    link_to_claude "$dir/skills/$name" "$HOME/.claude/skills/$name"
+  done
+  # settings.json は symlink にしない（/config での書き換えが全プロファイルに波及するため）。
+  # 一時ファイル経由で mv するのは、cp が既存の symlink 先を壊さないようにするため。
+  if [ -f "$HOME/.claude/settings.json" ]; then
+    cp "$HOME/.claude/settings.json" "$dir/.settings.json.tmp"
+    mv "$dir/.settings.json.tmp" "$dir/settings.json"
+  fi
+done
 '''
 
 [tasks.dotfiles-status]
@@ -85,4 +128,14 @@ if [ "$merged" = "$current" ]; then
 else
   echo "~/.claude/settings.json  differs (run mise run bootstrap to update)"
 fi
+# プロファイルを使うマシンのみ（CLAUDE_PROFILES 未設定なら回らない）
+for profile in ${CLAUDE_PROFILES:-}; do
+  path="$HOME/.claude-profiles/$profile/settings.json"
+  current=$(jq '.' "$path" 2>/dev/null)
+  if [ "$merged" = "$current" ]; then
+    echo "~/.claude-profiles/$profile/settings.json  up-to-date"
+  else
+    echo "~/.claude-profiles/$profile/settings.json  differs (run mise run bootstrap to update)"
+  fi
+done
 '''
