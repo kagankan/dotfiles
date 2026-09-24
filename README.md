@@ -23,6 +23,55 @@ mise bootstrap        # WSL では mise bootstrap -E wsl
 mise bootstrap dotfiles status
 ```
 
+## Claude Code のアカウント切り替え（プロファイル）
+
+Claude Code は 1 つの設定ディレクトリに 1 アカウントしか保持できないため、アカウントを使い分けるマシンでは `CLAUDE_CONFIG_DIR` を作業ディレクトリごとに切り替える。**この仕組みはマシン側のオプトイン**で、1 マシン 1 アカウントのマシンでは何も増えない（`~/.claude` だけを使う従来どおりの構成のまま）。
+
+```
+~/.claude/              # 共有テンプレ・hooks・scripts・マシン固有ファイルの置き場（全マシン共通）
+~/.claude-profiles/     # プロファイルを使うマシンにだけできる
+  default/              # どのアカウントにもログインしない（プロファイル未指定時の退避先）
+  personal/
+  work/
+```
+
+プロファイル側に置くのは、Claude Code が設定ディレクトリ直下からしか読まないもの（`CLAUDE.md`、`CLAUDE.local.md`、`skills/<名前>` の symlink と、生成した `settings.json`）だけ。hooks・scripts・マシン固有ファイルは `~/.claude` を絶対パスで参照するので、どのプロファイルで起動しても同じものが動く。
+
+### 有効化
+
+プロファイル一覧は `mise.toml` ではなくマシン側の `~/.config/mise/config.toml` で宣言する。repo 側に書くと全マシンに波及するため。
+
+```toml
+# ~/.config/mise/config.toml
+[env]
+CLAUDE_PROFILES = "default personal work"                  # mise bootstrap がこの名前でディレクトリを用意する
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/.claude-profiles/default" # 既定はどのアカウントも使わないプロファイル
+```
+
+**`~` は使わない。** mise の `[env]` の値はチルダ展開されないため、`~/.claude-profiles/…` と書くと作業ディレクトリ直下に `~` という名前のディレクトリが作られ、プロファイルがそこに新規作成される。`{{env.HOME}}` を使う。
+
+```sh
+mise bootstrap    # プロファイルの作成と共有設定の配布
+```
+
+作業用のプロファイルは作業ディレクトリごとの `mise.toml` で上書きする（mise の `[env]` はグローバル設定より優先され、ディレクトリを出ると戻る）。
+
+```toml
+# ~/<作業ディレクトリ>/mise.toml
+[env]
+CLAUDE_CONFIG_DIR = "{{env.HOME}}/.claude-profiles/work"
+```
+
+```sh
+mise trust ~/<作業ディレクトリ>/mise.toml
+```
+
+- 割り当てるディレクトリ名は所属先に依存するため repo では管理しない
+- mise は親ディレクトリを遡って `mise.toml` を探すので、作業ルートに 1 つ置けば配下の全リポジトリに効く
+- リポジトリの `mise.toml` をツールバージョン管理に使っている場合、`CLAUDE_CONFIG_DIR` は git 管理外の `mise.local.toml` に分ける
+- 各プロファイルでの初回ログインは、そのディレクトリで `claude` を起動して `/login` する
+- **`~/.claude` にログイン済みのアカウントが残っていると、`CLAUDE_CONFIG_DIR` が効かない経路（mise を通さない GUI 起動等）でそのアカウントが使われる。** プロファイルを使い始めたら `~/.claude` では `/logout` しておく
+
 ## Claude settings のマシン固有設定
 
 `~/.claude/settings.json` は symlink ではなく、共有ベースとマシン固有設定を jq でマージして生成する実ファイル。Claude Code のユーザーレベル設定に `settings.local.json` のような重ね合わせが効かないため、配置時にマージする。
@@ -31,7 +80,7 @@ mise bootstrap dotfiles status
 | --- | --- | --- |
 | `claude/settings.json` | repo | 全マシン共通のベース（permissions、hooks 等） |
 | `~/.claude/settings.machine.json` | マシン側（repo 外） | このマシン専用の値（`env`、`statusLine`、`enabledPlugins`、`model` 等） |
-| `~/.claude/settings.json` | 生成物 | 上記 2 つを `jq -s '.[0] * .[1]'` でマージした結果 |
+| `~/.claude/settings.json` | 生成物 | 上記 2 つを `jq -s '.[0] * .[1]'` でマージした結果（プロファイルを使うマシンでは各プロファイルにも同じ内容を配る） |
 
 `settings.machine.json` を repo の外（`~/.claude/` 直下）に置くのは、repo を消して clone し直してもマシン固有設定が残るようにするため。初回は `claude/settings.machine.json` をテンプレとして copy-once する。
 

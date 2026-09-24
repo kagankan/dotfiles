@@ -35,6 +35,8 @@
 - `claude/` 配下のファイルは共有テンプレとして機能するため、スクリプトが参照するファイル（許可リスト等）も空テンプレの状態で含める
 - マシン固有の設定ファイル（`main-branch-allowed-repos.txt`、`hooks/project-name.sh`、`settings.machine.json`、`CLAUDE.local.md`）は symlink にせず、`mise.toml` の `[tasks.bootstrap]` で「存在しない場合のみテンプレからコピー」する（マシン側の編集を上書きしないため）
 - マシン固有ファイルは repo 内ではなく `~/.claude/` 側に置く。repo を消して clone し直してもマシン固有設定が残るようにするため
+- Claude Code のアカウント切り替え（`~/.claude-profiles/<プロファイル>`）はマシン側のオプトインで、`~/.config/mise/config.toml` の `[env] CLAUDE_PROFILES` が宣言する。repo 側で宣言すると 1 マシン 1 アカウントのマシンにも波及するため
+  - hooks やスクリプトを足すときの参照パスは `$HOME/.claude/...` で書く。プロファイルに配るのは Claude Code が設定ディレクトリ直下からしか読まないもの（`CLAUDE.md`、`skills/`、`settings.json`）だけに留める
 
 ## 注意事項
 
