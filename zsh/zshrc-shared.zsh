@@ -20,6 +20,10 @@ function left-prompt {
 
 PROMPT=`left-prompt`
 
+# Claude Code の音声通知（hooks/notify-*.sh）の有効・無効を切り替える
+# 使い方: notify-claude [on|off]（引数なしで toggle）
+alias notify-claude="$HOME/.claude/scripts/notify-toggle.sh"
+
 # mise（インストール済みの場合のみ有効化）
 if [ -x "$HOME/.local/bin/mise" ]; then
   eval "$("$HOME/.local/bin/mise" activate zsh)"
