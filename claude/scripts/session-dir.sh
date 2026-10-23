@@ -20,6 +20,9 @@ fi
 
 BASE_DIR=".ai-output/sessions"
 
+# BASE_DIR が無いと find が失敗し、pipefail + set -e で無言終了するため先に作る
+mkdir -p "$BASE_DIR"
+
 existing=$(find "$BASE_DIR" -maxdepth 1 -name "*${SESSION_ID}*" -type d 2>/dev/null | head -1)
 
 if [[ -n "$existing" ]]; then
