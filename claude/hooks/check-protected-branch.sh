@@ -2,10 +2,19 @@
 # git commit 時に保護ブランチへの直接コミットをブロックする
 # ただし許可リストに載っているリポジトリは除外する
 
-CMD=$(cat | jq -r '.tool_input.command // empty' 2>/dev/null)
+INPUT=$(cat)
+CMD=$(echo "$INPUT" | jq -r '.tool_input.command // empty' 2>/dev/null)
 
 if ! echo "$CMD" | grep -q 'git commit'; then
   exit 0
+fi
+
+# hook のプロセスはセッションを起動したディレクトリで動くことがあり、worktree で作業していても
+# 元のチェックアウトのブランチを見てしまう。コマンドが実行されるディレクトリ（入力の cwd）へ移ってから調べる。
+# 移れなかった場合は、これまでどおり hook のプロセスのディレクトリで調べる
+HOOK_CWD=$(echo "$INPUT" | jq -r '.cwd // empty' 2>/dev/null)
+if [ -n "$HOOK_CWD" ] && [ -d "$HOOK_CWD" ]; then
+  cd "$HOOK_CWD" 2>/dev/null || true
 fi
 
 REMOTE=$(git remote get-url origin 2>/dev/null)
