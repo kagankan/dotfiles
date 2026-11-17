@@ -54,7 +54,8 @@ function wt {
 # マージ済み、またはリモートで削除済みのブランチの worktree を fzf で選んで削除する（Tab で複数選択）
 # - ブランチは消さない
 # - 未コミットの変更がある worktree は git worktree remove が拒否するので消えない
-# - 「コミットなし」は作ったばかりで作業前の worktree も含むので、使用中でないか確かめてから選ぶ
+# - push していないブランチは候補にしない。コミットがなくても、作業前や読むだけで使っている
+#   worktree（Claude のセッションが作ったもの等）があり、マージ済みと区別できないため
 function wt-prune {
   local main
   main=$(_wt_main) || return
@@ -73,8 +74,7 @@ function wt-prune {
       NR == FNR { merged[$0] = 1; next }
       $4 == "" || $4 == main || $4 == here { next }
       $3 == "[gone]" { print $1 "\tリモート削除済み\t" $4; next }
-      ($1 in merged) && $2 != "" { print $1 "\tマージ済み\t" $4; next }
-      ($1 in merged) { print $1 "\tコミットなし\t" $4 }
+      ($1 in merged) && $2 != "" { print $1 "\tマージ済み\t" $4 }
     ' \
       <(git -C "$main" branch --merged "$base" --format='%(refname:short)') \
       <(git -C "$main" for-each-ref --format='%(refname:short)%09%(upstream)%09%(upstream:track)%09%(worktreepath)' refs/heads) |
